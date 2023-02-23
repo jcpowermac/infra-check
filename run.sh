@@ -101,6 +101,19 @@ while [ true ]; do
         fi
     done
     echo "" >> ${DATA_DIR}/query/segment_pass_trends.txt
+    echo "Failing cluster IDs" >> ${DATA_DIR}/query/segment_pass_trends.txt
+    for f in "$dir"* ; do        
+        if [[ $f == *"ci-op-"* ]]; then
+            # echo -n $(cat $f) >> ${DATA_DIR}/query/segment_pass_trends.txt
+            result=$(cat $f)
+            if [[ ${result} == "X" ]]; then
+                job_id=$(echo $f | cut -d'/' -f 4)
+                echo " - ${job_id}" >> ${DATA_DIR}/query/segment_pass_trends.txt
+            fi
+        fi
+    done
+
+    echo "" >> ${DATA_DIR}/query/segment_pass_trends.txt
     done
     mv ${DATA_DIR}/query/network_status.txt ${DATA_DIR}/http/network_status.txt
     mv ${DATA_DIR}/query/segment_pass_trends.txt ${DATA_DIR}/http/segment_pass_trends.txt
