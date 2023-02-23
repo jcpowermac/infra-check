@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-check
+  labels:
+    app: health-check
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: health-check
+  template:
+    metadata:
+      labels:
+        app: health-check
+    spec:
+      containers:
+      - image: quay.io/<repo>/cluster-health:latest
+        imagePullPolicy: Always
+        name: check
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+         - mountPath: /data
+           name: data
+      - image: quay.io/<repo>/cluster-health:latest
+        imagePullPolicy: Always
+        name: query
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+        command: 
+        - python3
+        - -m 
+        - http.server
+        - -d 
+        - /data/http
+        ports:
+        - containerPort: 8000        
+        volumeMounts:
+         - mountPath: /data
+           name: data
+      dnsPolicy: ClusterFirst      
+      schedulerName: default-scheduler
+      serviceAccount: infra-health
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: health-check-data
