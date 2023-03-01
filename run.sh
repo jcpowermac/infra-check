@@ -2,6 +2,8 @@ PATH=$PATH:.
 
 DATA_DIR=/data
 
+source ./network-check.sh
+
 mkdir -p $DATA_DIR/query
 mkdir -p $DATA_DIR/http
 while [ true ]; do 
@@ -11,17 +13,6 @@ while [ true ]; do
     ${UTIL_OC_BIN} login "${INT_URI}" \
             --token="$(cat "${SA_TOKEN_PATH}")" \
             --certificate-authority="${SA_CA_PATH}"
-
-    check_range () {
-        for (( SEG=$SEG_START; SEG<=$SEG_END; SEG++ )); do
-            ping -c 1 192.168.$SEG.1
-            if [ $? -eq 0 ]; then
-                echo "Segment $SEG responding" >> $DATA_DIR/query/network_status.txt
-            else
-                echo "!!! Segment $SEG not responding" >> $DATA_DIR/query/network_status.txt
-            fi
-        done
-    }
 
     SEG_START=88
     SEG_END=108

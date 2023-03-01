@@ -3,5 +3,6 @@ RUN curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.12.5/ope
 RUN dnf install -y iputils.x86_64 jq python39
 RUN tar xf openshift-client-linux-4.12.5.tar.gz
 COPY run.sh .
+COPY network-check.sh .
 
 CMD ./run.sh
