@@ -7,6 +7,7 @@
             else
                 echo "!!! Segment $SEG not responding"
                 RESULT=1
+                touch $STATUS_FILE
             fi
         done
     }
